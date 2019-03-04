@@ -1,6 +1,7 @@
 import math
 from inspect import signature
 
+
 class Descriptor():
     """Class to provide a descriptor for the histogram function"""
 
@@ -14,10 +15,7 @@ class Descriptor():
 def histogram(x):
     """Function to estimate a histogram by taking in a vector of values and its descriptor"""
 
-    # make sure the input arguments are correct
-    # dims = [nrowx, ncolx]
-    # dims[nrowx, ncolx] = x.shape
-
+    # makes sure the input arguments are correct
     sig = signature(histogram)
     if len(sig.parameters) != 1:
         raise TypeError("You have inputted the wrong number of arguments")
@@ -36,16 +34,44 @@ def histogram(x):
     if descriptor.upper() <= descriptor.lower():
         raise Exception("Invalid bounds")
 
-    # Excludes element x(i) if the index is out of range
-    #result(1:ncell) = 0
-    w = round((x-descriptor.lower()) / (descriptor.upper-descriptor.lower) * ncell + 0.25)
-    for i in len(x):
-        index = w(i)
-        if (index >= 1) & (index <= ncell):
-            result(index) = result(index) + 1
-
+    # Excludes element x(i) if the index is out of range            NEEDS WORK
+    # ncol_x = len(x)
+    # result = [None] * len(ncell)
+    # w = round((x-descriptor.lower()) / (descriptor.upper-descriptor.lower) * ncell + 0.25)
+    # for i in ncol_x:
+    #     index = w(i)
+    #     if (index >= 1) & (index <= ncell):
+    #         result(index) = result(index) + 1
 
     # return descriptors & row vector containing the histogram
-## MAKE A FUNCTION THAT CALCULATES THE ENTROPY USING THE HISTOGRAM
 
 
+def entropy(x, descriptor, approach, base):
+    """Function that estimates the entropy of a stationary signal with independent samples"""
+
+    sig = signature(entropy)
+    if len(sig.parameters) > 4:
+        raise Exception("Too many input arguments")
+
+    # sort out how many input arguments your function is going to take (will it take approach & base types?)
+
+    if not isinstance(descriptor, Descriptor):
+        raise TypeError("The descriptor is not of class Descriptor")
+
+    lower_bound = descriptor.lower()
+    upper_bound = descriptor.upper()
+    ncell = descriptor.ncell()
+
+    # initialising the return values
+    estimate = 0
+    sigma = 0
+    count = 0
+
+    #add options for different approaches and biases
+
+    # calculate entropy equation
+
+    # base transformation
+    estimate = estimate / math.log(base)
+    # n_bias = n_bias/math.log(base)         only if the approach is biased
+    sigma = sigma / math.log(base)

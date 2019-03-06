@@ -1,6 +1,6 @@
 import math
 from inspect import signature
-#import numpy as np
+import numpy as np
 
 
 class Descriptor():
@@ -35,11 +35,11 @@ def histogram(x):
     if descriptor.upper() <= descriptor.lower():
         raise Exception("Invalid bounds")
 
-    ncol_x = len(x)
-    result = []        #vector to store the result
     # Excludes element x(i) if the index is out of range (1 <= index <= ncell)
+    ncol_x = len(x)
+    result = []  # vector to store the result
     for i in range(ncol_x):
-        x0 = x[i]      #one particular point in window x
+        x0 = x[i]  # one particular point in window x
         # Calculates the index of the histogram cells
         bin_idx = round((x0 - descriptor.lower()) / (descriptor.upper - descriptor.lower) * ncell + 0.25)
         if (bin_idx >= 1) & (bin_idx <= ncell):
@@ -54,52 +54,68 @@ def entropy(x):
 
     result, descriptor = histogram(x)
 
-#     # Tests to ensure the input arguments are right
-#     sig = signature(entropy)
-#     if len(sig.parameters) > 2:
-#         raise Exception("Too many input arguments")
-#
-#     if not isinstance(descriptor, Descriptor):
-#         raise TypeError("The descriptor is not of class Descriptor")
-#
-#     lower_bound = descriptor.lower()
-#     upper_bound = descriptor.upper()
-#     ncell = descriptor.ncell()
-#
-#     # initialising the return values
-#     estimate = 0
-#     sigma = 0
-#     count = 0
-#
-#     for j in range(ncell):
-#       if result(j)
-#
-#     # base transformation
-#     estimate = estimate / math.log(base)
-#     # n_bias = n_bias/math.log(base)         only if the approach is biased
-#     sigma = sigma / math.log(base)
-#
-#
-#############       MAIN        #############
-# Retrieves the traces from the files
-files = ["010403ba_0007_1.asc", "010403ba_0007_2.asc", "010403ba_0007_3.asc",
+    # # Tests to ensure the input arguments are right
+    # if not isinstance(descriptor, Descriptor):
+    #     raise TypeError("The descriptor is not of class Descriptor")
+    #
+    # lower = descriptor.lower()  # Lower and upper bounds
+    # upper = descriptor.upper()
+    # ncell = descriptor.ncell()
+    #
+    # # initialising the return values
+    # estimate = 0    # The entropy estimate
+    # sigma = 0   # The standard error of the estimate
+    # count = 0
+    #
+    # # Produce estimate for entropy with an unbiased approach and use of logarithm base e
+    # for j in range(0, len(ncell)):
+    #   if result[j] != 0:
+    #     log_f = math.log(result[j])
+    #   else:
+    #     log_f = 0
+    #   count = count + result[j]
+    #   estimate = estimate - result[j] * log_f   # Updates the estimate for each bin
+    #   sigma = sigma + result[j] * log_f^2
+    #
+    # # Generates biased estimate
+    # estimate = estimate / count
+    # sigma = math.sqrt( (sigma/count-estimate^2) / (count-1))
+    # estimate = estimate + math.log(count) + math.log((upper-lower)/ncell)
+    # n_bias = -(ncell-1) / (2 * count)
+    #
+    # # Conversion to unbiased estimate
+    # estimate = estimate - n_bias
+    # n_bias = 0
+    #
+    # # base transformation
+    # base = math.exp(1)
+    # estimate = estimate / math.log(base)    # Estimate for the entropy
+    # sigma = sigma / math.log(base)        # Standard error of the estimate
+    #
+    # return estimate, sigma, descriptor
+
+
+def main():
+    # Retrieves the traces from the files
+    files = ["010403ba_0007_1.asc", "010403ba_0007_2.asc", "010403ba_0007_3.asc",
          "010403ba_0007_4.asc", "010403ba_0007_5.asc", "010403ba_0007_6.asc"]
-trace = []
-sampling_rate = 256
-file_count = 0
+    trace = []
+    sampling_rate = 256
+    file_count = -1
+    t = []
+
 # Store the traces and time vectors in cell arrays
-for f in files:
-    file_count = file_count + 1
-    trace.append(open(f, "r"))        #want this to load the raw data
-    #t[file_count] = np.divide(range(1,(trace[file_count]))), sampling_rate)     #the time vector (in seconds)
+    for f in files:
+        file_count = file_count + 1
+        data = (open(f, "r"))  # want this to load the raw data
+        trace = np.append(trace, data.read())
+        t.append(np.divide(range(1, len(trace[file_count])), sampling_rate))  # the time vector (in seconds)
 
-# for f in files:
-#     file_count = file_count + 1
-#     trace[file_count] = open(f, "r")        #want this to load the raw data
-#     #t[file_count] = numpy.divide(range(1,(trace[file_count]))), sampling_rate)     #the time vector (in seconds)
-
-# for count, f in enumerate(files):
-#     trace[count] = open(f, "r")
-#     t[count] = numpy.divide((1:len(trace[count])), sampling_rate)
-
+# Calculate entropy over sliding window (non-overlapping)
+    win_seconds = 0.5  # window size of one second
+    window_size = sampling_rate * win_seconds   # convert window from seconds to samples
+    ent = []
+    for i in trace:
+        for j in range(1, len(i), int(window_size)):
+            ent.append(entropy(i[j:j + window_size]))
 

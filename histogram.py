@@ -54,6 +54,7 @@ def histogram(x):
     return result, descriptor
 
 
+# The function below does not work and is thus commented out
 # Reference: http://www.cs.rug.nl/~rudy/matlab/doc/entropy.html
 # def entropy(x):
 #     """Function that estimates the entropy of a stationary signal with independent samples"""
@@ -118,13 +119,6 @@ for f in files:
     file.close()
     t.append(np.divide(range(0, len(trace[file_count])), sampling_rate))  # the time vector (in seconds)
 
-
 print(histogram(trace[0]))
-# ent = []
-# for i in trace:
-#     ent.append(entropy(i))
-#
-# print(entropy)
 
 
-# Plot EEG traces and their entropy using matplotlib
